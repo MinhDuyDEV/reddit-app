@@ -18,11 +18,9 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
-  debug: process.env.NODE_ENV === "development",
-  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async session({ token, session }: any) {
-      if (session && token) {
+      if (token) {
         session.user.id = token.id;
         session.user.name = token.name;
         session.user.email = token.email;
@@ -32,7 +30,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
 
-    async jwt({ token, user }: any) {
+    async jwt({ token, user }) {
       const dbUser = await db.user.findFirst({
         where: {
           email: token.email,
